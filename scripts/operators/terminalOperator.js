@@ -46,9 +46,6 @@ class TerminalOperator {
       }, false);
       resultText = TerminalOperator.VACATION_DATA.success;
       resultColor = 'var(--greenM)';
-    } catch (e) {
-      resultText = TerminalOperator.VACATION_DATA.fail;
-      resultColor = 'var(--red)';
     } finally {
       this.#contentDrawer.updateInnerElement(text, (elem) => {
         elem.textContent = resultText;
