@@ -19,7 +19,6 @@ class AppOperator {
       case BUTTONS.VACATION:
         this.#actionsListOperator.setAllActionsAvailability(false);
         await this.#terminalOperator.displayVacation();
-        this.#actionsListOperator.setAllActionsAvailability(true);
         break;
       case BUTTONS.TIME:
         this.#terminalOperator.handleTimeCall();
@@ -31,8 +30,7 @@ class AppOperator {
       }
         break;
       case BUTTONS.EXIT:
-        this.#actionsListOperator.setAllActionsAvailability(false);
-        await this.#terminalOperator.processExit();
+        this.#terminalOperator.processExit();
         this.#actionsListOperator.processExit();
       default:
         break;

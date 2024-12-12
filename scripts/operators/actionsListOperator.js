@@ -1,3 +1,11 @@
+const BUTTONS = {
+  INIT: 'init',
+  VACATION: 'vacation',
+  TIME: 'time',
+  REASONS: 'reasons',
+  EXIT: 'exit'
+};
+
 class ActionsListOperator {
   static processedButtons = {
     [BUTTONS.INIT]: 'Запуск',
@@ -45,7 +53,7 @@ class ActionsListOperator {
   processInit() {
     this.#resetActions();
     this.#drawer.resetContent();
-    for (const [buttonId, buttonText] of Object.entries(ButtonsOperator.processedButtons)) {
+    for (const [buttonId, buttonText] of Object.entries(ActionsListOperator.processedButtons)) {
       if (buttonId === BUTTONS.INIT) continue;
       this.#drawer.addContent(this.#drawer.createButton(buttonId, buttonText));
     }
@@ -58,11 +66,7 @@ class ActionsListOperator {
       (button) => {
         const isLaunched = !!button.getAttribute('data-is-launched')
         button.textContent = !isLaunched ? 'Прекратить отслеживание времени' : 'Отслеживать время'
-        if (isLaunched) {
-          button.removeAttribute('data-is-launched');
-        } else {
-          button.setAttribute('data-is-launched', 'true');
-        }
+        button.setAttribute('data-is-launched', `${!isLaunched}`);
       }
     )
   }
@@ -71,15 +75,14 @@ class ActionsListOperator {
     this.#drawer.updateInnerElement(
       this.#buttonsDict[BUTTONS.REASONS],
       (button) => {
-        button.disabled = !to;
+        button.disabled = to;
       }
     );
   }
 
   processExit() {
-    this.#resetActions();
     this.#drawer.setContent(
-      this.#drawer.createButton(BUTTONS.INIT, ButtonsOperator.processedButtons[BUTTONS.INIT])
+      this.#drawer.createButton(BUTTONS.INIT, ActionsListOperator.processedButtons[BUTTONS.INIT])
     );
     this.initActions();
   }

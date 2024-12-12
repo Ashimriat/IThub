@@ -59,10 +59,9 @@ class TerminalOperator {
 
   handleTimeCall() {
     if (this.#timerIntervalId === null) {
-      this.#updateTimer();
-      this.#timerIntervalId = setInterval(() => this.#updateTimer(), 1000);
+      this.#timerIntervalId = setTimeout(() => this.#updateTimer(), 3_000);
     } else {
-      clearInterval(this.#timerIntervalId);
+      clearTimeout(this.#timerIntervalId);
       this.#timerIntervalId = null;
       this.#timerDrawer.resetContent();
     }
@@ -70,12 +69,9 @@ class TerminalOperator {
   
   #updateTimer() {
     const date = new Date();
-    const hours = date.getHours();
-    const h = hours < 10 ? `0${hours}` : hours;
-    const minutes = date.getMinutes();
-    const m = minutes < 10 ? `0${minutes}` : minutes;
-    const seconds = date.getSeconds();
-    const s = seconds < 10 ? `0${seconds}` : seconds;
+    const h = date.getHours();
+    const m = date.getMinutes();
+    const s = date.getSeconds();
     this.#timerDrawer.setContent(
       this.#timerDrawer.createParagraph(`Текущее время: ${h}:${m}:${s}`)
     );
@@ -115,7 +111,7 @@ class TerminalOperator {
     this.#contentDrawer.append(loader, loaderContainer);
     this.#contentDrawer.addContent(loaderContainer);
     await wait(5_000, 5, (step) => {
-      loader.setAttribute('style', `--progress: ${100 * (step + 1) / 5}%`);
+      loader.setAttribute('style', `--progress: ${1 * (step + 1) / 5}%`);
     });
     this.#contentDrawer.resetContent();
   }
