@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style.css"/>
+  <title>Terminal</title>
+</head>
+<body>
+  <header class="centered">
+    <h1>IThub Terminal</h1>
+  </header>
+  <section id="terminal" class="centered">
+    <div id="content" class="centered"></div>
+    <div id="timer"></div>
+  </section>
+  <section id="actions">
+    <h2>Доступные действия</h2>
+    <div id="buttonsList" class="centered">
+      <button id="init">
+        Запуск
+      </button>
+    </div>
+  </section>
+  <footer class="centered">
+    <h2>
+      Powered by JavaScript
+    </h2>
+  </footer>
+  <script src="./scripts/utils.js"></script>
+  <script src="./scripts/render/contentController.js"></script>
+  <script src="./scripts/render/drawer.js"></script>
+  <script src="./scripts/operators/buttonsOperator.js"></script>
+  <script src="./scripts/operators/terminalOperator.js"></script>
+  <script src="./scripts/operators/actionsListOperator.js"></script>
+  <script src="./scripts/operators/appOperator.js"></script>
+  <script src="./scripts/main.js"></script>
+</body>
+</html>
