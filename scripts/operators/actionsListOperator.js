@@ -1,10 +1,18 @@
+const BUTTONS = {
+  INIT: 'init',
+  VACATION: 'vacation',
+  TIME: 'time',
+  REASONS: 'reasons',
+  EXIT: 'exit'
+};
+
 class ActionsListOperator {
   static processedButtons = {
     [BUTTONS.INIT]: 'Запуск',
     [BUTTONS.VACATION]: 'Выйти на каникулы',
     [BUTTONS.TIME]: 'Отслеживать время',
     [BUTTONS.REASONS]: 'Скажи, почему не научился жить один?',
-    [BUTTONS.EXIT]: 'Завершить сессию',
+    [BUTTONS.EXIT]: 'Завершить сеанс',
   };
 
   #listener
@@ -45,7 +53,7 @@ class ActionsListOperator {
   processInit() {
     this.#resetActions();
     this.#drawer.resetContent();
-    for (const [buttonId, buttonText] of Object.entries(ButtonsOperator.processedButtons)) {
+    for (const [buttonId, buttonText] of Object.entries(ActionsListOperator.processedButtons)) {
       if (buttonId === BUTTONS.INIT) continue;
       this.#drawer.addContent(this.#drawer.createButton(buttonId, buttonText));
     }
@@ -79,7 +87,7 @@ class ActionsListOperator {
   processExit() {
     this.#resetActions();
     this.#drawer.setContent(
-      this.#drawer.createButton(BUTTONS.INIT, ButtonsOperator.processedButtons[BUTTONS.INIT])
+      this.#drawer.createButton(BUTTONS.INIT, ActionsListOperator.processedButtons[BUTTONS.INIT])
     );
     this.initActions();
   }

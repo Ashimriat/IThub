@@ -108,7 +108,7 @@ class TerminalOperator {
   async processExit() {
     this.#reasonsGenerator = null;
     this.#contentDrawer.setContent(
-      this.#createTitle('Завершаю сессию. Спасибо за визит!')
+      this.#createTitle('Завершаю сеанс. Спасибо за визит!')
     );
     const loaderContainer = this.#contentDrawer.createContainer('loaderContainer');
     const loader = this.#contentDrawer.createContainer('loader');
