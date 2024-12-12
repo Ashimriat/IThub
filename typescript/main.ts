@@ -135,7 +135,7 @@ class TerminalOperator {
       'Проверяем оценки...'      
     ],
     success: 'Море ждёт нас!',
-    fail: 'А сессию закрывать кто будем?!'
+    fail: 'А сессию закрывать кто будет?!'
   };
 
   #reasonsGenerator: Generator<undefined, void, unknown> | null = null;
