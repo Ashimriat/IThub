@@ -1,0 +1,1 @@
+const appOperator = new AppOperator();

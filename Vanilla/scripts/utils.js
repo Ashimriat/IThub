@@ -7,23 +7,21 @@ const wait = (
   omitError = true,
 ) => new Promise((res, rej) => {
   let counter = 0;
-  let usedTime = time ?? (Math.random() || 1) * 1000;
-  let usedSteps = steps || 1;
+  const usedSteps = steps || 1;
   let timerId;
   (function handler() {
     timerId = setTimeout(() => {
       clearTimeout(timerId);
-      if (counter <= steps - 1) {
+      if (counter <= usedSteps - 1) {
         stepProcessor(counter);
       }
       counter++;
-      if (counter <= steps) {
+      if (counter <= usedSteps) {
         handler();
-      } else if (Math.round(Math.random()) === 1 || omitError) {
-        res();
       } else {
-        rej();
+        const result = (Math.round(Math.random()) === 1 || omitError) ? res : rej;
+        result();
       }
-    }, usedTime / usedSteps);
-  })()
+    }, time / usedSteps);
+  })();
 });
