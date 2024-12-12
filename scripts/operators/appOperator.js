@@ -1,12 +1,10 @@
 class AppOperator {
-  #buttonsOperator
   #terminalOperator
   #actionsListOperator
 
   constructor() {
-    this.#buttonsOperator = new ButtonsOperator(this.#processButton.bind(this));
     this.#terminalOperator = new TerminalOperator();
-    this.#actionsListOperator = new ActionsListOperator(this.#buttonsOperator);
+    this.#actionsListOperator = new ActionsListOperator(this.#processButton.bind(this));
   }
   
   async #processButton(e) {
@@ -42,6 +40,6 @@ class AppOperator {
   }
 
   init() {
-    this.#buttonsOperator.init();
+    this.#actionsListOperator.initActions();
   }
 }

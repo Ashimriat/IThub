@@ -1,34 +1,63 @@
 class ActionsListOperator {
-  #buttonsOperator;
+  static processedButtons = {
+    [BUTTONS.INIT]: 'Запуск',
+    [BUTTONS.VACATION]: 'Выйти на каникулы',
+    [BUTTONS.TIME]: 'Отслеживать время',
+    [BUTTONS.REASONS]: 'Скажи, почему не научился жить один?',
+    [BUTTONS.EXIT]: 'Завершить сессию',
+  };
+
+  #listener
+  #buttons = [];
   #drawer = new Drawer('#buttonsList');
 
-  constructor(buttonsOperator) {
-    this.#buttonsOperator = buttonsOperator;
+  constructor(listener) {
+    this.#listener = listener;
+  }
+
+  get #buttonsDict() {
+    return this.#buttons.reduce((acc, val) => {
+      acc[val.getAttribute('id')] = val;
+      return acc;
+    }, {});
+  }
+
+  #resetActions() {
+    for (const button of this.#buttons) {
+      button.removeEventListener('click', this.#listener);
+    }
+    this.#buttons = [];
+  }
+
+  initActions() {
+    for (const button of document.querySelectorAll('button')) {
+      button.addEventListener('click', this.#listener);
+      this.#buttons.push(button);
+    }
   }
 
   setAllActionsAvailability(status) {
-    for (const button of this.#buttonsOperator.buttons) {
+    for (const button of this.#buttons) {
       button.disabled = !status;
     }
   }
-  
+
   processInit() {
-    this.#buttonsOperator.reset();
+    this.#resetActions();
     this.#drawer.resetContent();
     for (const [buttonId, buttonText] of Object.entries(ButtonsOperator.processedButtons)) {
       if (buttonId === BUTTONS.INIT) continue;
       this.#drawer.addContent(this.#drawer.createButton(buttonId, buttonText));
     }
-    this.#buttonsOperator.init();
+    this.initActions();
   }
-  
 
   handleTimeCall() {
     this.#drawer.updateInnerElement(
-      this.#buttonsOperator.buttonsDict[BUTTONS.TIME],
+      this.#buttonsDict[BUTTONS.TIME],
       (button) => {
-        const isLaunched = !!button.getAttribute('data-is-launched');
-        button.textContent = !isLaunched ? 'Прекратить отслеживание времени' : 'Отслеживать время';
+        const isLaunched = !!button.getAttribute('data-is-launched')
+        button.textContent = !isLaunched ? 'Прекратить отслеживание времени' : 'Отслеживать время'
         if (isLaunched) {
           button.removeAttribute('data-is-launched');
         } else {
@@ -40,7 +69,7 @@ class ActionsListOperator {
 
   toggleReasons(to) {
     this.#drawer.updateInnerElement(
-      this.#buttonsOperator.buttonsDict[BUTTONS.REASONS],
+      this.#buttonsDict[BUTTONS.REASONS],
       (button) => {
         button.disabled = !to;
       }
@@ -48,10 +77,10 @@ class ActionsListOperator {
   }
 
   processExit() {
-    this.#buttonsOperator.reset();
+    this.#resetActions();
     this.#drawer.setContent(
       this.#drawer.createButton(BUTTONS.INIT, ButtonsOperator.processedButtons[BUTTONS.INIT])
     );
-    this.#buttonsOperator.init();
+    this.initActions();
   }
 }

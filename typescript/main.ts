@@ -231,34 +231,74 @@ class TerminalOperator {
   }
 }
 
-class ActionsListOperator {
-  #drawer = new Drawer('#buttonsList');
-  #buttonsOperator!: ButtonsOperator;
+type ButtonClickListener = (e: PointerEvent | MouseEvent) => void;
 
-  constructor(buttonsOperator: ButtonsOperator) {
-    this.#buttonsOperator = buttonsOperator;
+const BUTTONS = {
+  INIT: 'init',
+  VACATION: 'vacation',
+  TIME: 'time',
+  REASONS: 'reasons',
+  EXIT: 'exit'
+} as const;
+type ButtonType = typeof BUTTONS[keyof typeof BUTTONS];
+
+class ActionsListOperator {
+  static processedButtons = {
+    [BUTTONS.INIT]: 'Запуск',
+    [BUTTONS.VACATION]: 'Выйти на каникулы',
+    [BUTTONS.TIME]: 'Отслеживать время',
+    [BUTTONS.REASONS]: 'Скажи, почему не научился жить один?',
+    [BUTTONS.EXIT]: 'Завершить сессию',
+  };
+
+  #listener!: ButtonClickListener;
+  #buttons: HTMLButtonElement[] = [];
+  #drawer = new Drawer('#buttonsList');
+
+  constructor(listener: ButtonClickListener) {
+    this.#listener = listener;
   }
 
-  setAllActionsAvailability(status) {
-    for (const button of this.#buttonsOperator.buttons) {
+  get #buttonsDict(): Record<ButtonType, HTMLButtonElement> {
+    return this.#buttons.reduce((acc, val) => {
+      acc[val.getAttribute('id') as ButtonType] = val;
+      return acc;
+    }, <Record<ButtonType, HTMLButtonElement>>{});
+  }
+
+  #resetActions() {
+    for (const button of this.#buttons) {
+      button.removeEventListener('click', this.#listener);
+    }
+    this.#buttons = [];
+  }
+
+  initActions() {
+    for (const button of document.querySelectorAll('button')) {
+      button.addEventListener('click', this.#listener);
+      this.#buttons.push(button);
+    }
+  }
+
+  setAllActionsAvailability(status: boolean) {
+    for (const button of this.#buttons) {
       button.disabled = !status;
     }
   }
-  
 
   processInit() {
-    this.#buttonsOperator.reset();
+    this.#resetActions();
     this.#drawer.resetContent();
     for (const [buttonId, buttonText] of Object.entries(ButtonsOperator.processedButtons)) {
       if (buttonId === BUTTONS.INIT) continue;
       this.#drawer.addContent(this.#drawer.createButton(buttonId, buttonText));
     }
-    this.#buttonsOperator.init();
+    this.initActions();
   }
 
   handleTimeCall() {
     this.#drawer.updateInnerElement<HTMLButtonElement>(
-      this.#buttonsOperator.buttonsDict[BUTTONS.TIME],
+      this.#buttonsDict[BUTTONS.TIME],
       (button) => {
         const isLaunched = !!button.getAttribute('data-is-launched')
         button.textContent = !isLaunched ? 'Прекратить отслеживание времени' : 'Отслеживать время'
@@ -273,7 +313,7 @@ class ActionsListOperator {
 
   toggleReasons(to: boolean) {
     this.#drawer.updateInnerElement<HTMLButtonElement>(
-      this.#buttonsOperator.buttonsDict[BUTTONS.REASONS],
+      this.#buttonsDict[BUTTONS.REASONS],
       (button) => {
         button.disabled = !to;
       }
@@ -281,76 +321,21 @@ class ActionsListOperator {
   }
 
   processExit() {
-    this.#buttonsOperator.reset();
+    this.#resetActions();
     this.#drawer.setContent(
       this.#drawer.createButton(BUTTONS.INIT, ButtonsOperator.processedButtons[BUTTONS.INIT])
     );
-    this.#buttonsOperator.init();
-  }
-}
-
-type ButtonClickListener = (e: PointerEvent | MouseEvent) => void;
-
-const BUTTONS = {
-  INIT: 'init',
-  VACATION: 'vacation',
-  TIME: 'time',
-  REASONS: 'reasons',
-  EXIT: 'exit'
-} as const;
-type ButtonType = typeof BUTTONS[keyof typeof BUTTONS];
-
-class ButtonsOperator {
-  static processedButtons = {
-    [BUTTONS.INIT]: 'Запуск',
-    [BUTTONS.VACATION]: 'Выйти на каникулы',
-    [BUTTONS.TIME]: 'Отслеживать время',
-    [BUTTONS.REASONS]: 'Скажи, почему не научился жить один?',
-    [BUTTONS.EXIT]: 'Завершить сессию',
-  };
-
-  #listener!: ButtonClickListener;
-  #buttons: HTMLButtonElement[] = [];
-
-  constructor(listener: ButtonClickListener) {
-    this.#listener = listener;
-  }
-
-  get buttons() {
-    return this.#buttons;
-  }
-
-  get buttonsDict(): Record<ButtonType, HTMLButtonElement> {
-    return this.#buttons.reduce((acc, val) => {
-      acc[val.getAttribute('id') as ButtonType] = val;
-      return acc;
-    }, <Record<ButtonType, HTMLButtonElement>>{});
-  }
-
-  reset() {
-    for (const button of this.#buttons) {
-      button.removeEventListener('click', this.#listener);
-    }
-    this.#buttons = [];
-  }
-
-  init() {
-    for (const button of document.querySelectorAll('button')) {
-      button.addEventListener('click', this.#listener);
-      this.#buttons.push(button);
-    }
+    this.initActions();
   }
 }
 
 class AppOperator {
-  #buttonsOperator!: ButtonsOperator;
   #terminalOperator!: TerminalOperator;
   #actionsListOperator!: ActionsListOperator;
 
   constructor() {
-    this.#buttonsOperator = new ButtonsOperator(this.#processButton.bind(this));
     this.#terminalOperator = new TerminalOperator();
-    this.#actionsListOperator = new ActionsListOperator(this.#buttonsOperator);
+    this.#actionsListOperator = new ActionsListOperator(this.#processButton.bind(this));
   }
   
   async #processButton(e: PointerEvent | MouseEvent): Promise<void> {
@@ -386,22 +371,10 @@ class AppOperator {
   }
 
   init(): void {
-    this.#buttonsOperator.init();
+    this.#actionsListOperator.initActions();
   }
 }
 
 
 const appOperator = new AppOperator();
 appOperator.init();
-
-
-type Stopper = { openSubmenuNumber: number, shouldFinish: boolean };
-
-function* makeGenerator({ openSubmenuNumber, shouldFinish }: Stopper) {
-  // Открываешь меню
-  yield;
-  while (!shouldFinish) {
-    // открываешь меню
-    yield;
-  }
-}
