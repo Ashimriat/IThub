@@ -12,7 +12,7 @@ class ActionsListOperator {
     [BUTTONS.VACATION]: 'Выйти на каникулы',
     [BUTTONS.TIME]: 'Отслеживать время',
     [BUTTONS.REASONS]: 'Скажи, почему не научился жить один?',
-    [BUTTONS.EXIT]: 'Завершить сессию',
+    [BUTTONS.EXIT]: 'Завершить сеанс',
   };
 
   #listener

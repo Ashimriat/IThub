@@ -135,7 +135,7 @@ class TerminalOperator {
       'Проверяем оценки...'      
     ],
     success: 'Море ждёт нас!',
-    fail: 'А сессию закрывать кто будем?!'
+    fail: 'А сессию закрывать кто будет?!'
   };
 
   #reasonsGenerator: Generator<undefined, void, unknown> | null = null;
@@ -225,7 +225,7 @@ class TerminalOperator {
 
   async processExit() {
     this.#contentDrawer.setContent(
-      this.#createTitle('Завершаю сессию. Спасибо за визит!')
+      this.#createTitle('Завершаю сеанс. Спасибо за визит!')
     );
     await wait(5_000);
   }
@@ -248,7 +248,7 @@ class ActionsListOperator {
     [BUTTONS.VACATION]: 'Выйти на каникулы',
     [BUTTONS.TIME]: 'Отслеживать время',
     [BUTTONS.REASONS]: 'Скажи, почему не научился жить один?',
-    [BUTTONS.EXIT]: 'Завершить сессию',
+    [BUTTONS.EXIT]: 'Завершить сеанс',
   };
 
   #listener!: ButtonClickListener;
