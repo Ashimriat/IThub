@@ -63,12 +63,16 @@ class TerminalOperator {
       this.#timerDrawer.resetContent();
     }
   }  
+
+  #correctTime(src) {
+    return src < 10 ? `0${src}`: `${src}`;
+  }
   
   #updateTimer() {
     const date = new Date();
-    const h = date.getHours();
-    const m = date.getMinutes();
-    const s = date.getSeconds();
+    const h = this.#correctTime(date.getHours());
+    const m = this.#correctTime(date.getMinutes());
+    const s = this.#correctTime(date.getSeconds());
     this.#timerDrawer.setContent(
       this.#timerDrawer.createParagraph(`Текущее время: ${h}:${m}:${s}`)
     );
